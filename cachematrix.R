@@ -13,8 +13,38 @@
 # rules of the R language and how they can be manipulated to preserve state
 # inside of an R object.
 #
+# NOTE 1:
+# To load this file, run the following:
+# > setwd(file.path(<PATH>, "ProgrammingAssignment2"))
+# > source("cachematrix.R")
+#
+# NOTE 2:
+# All examples are based on the matrices found at:
+# http://www.mathwords.com/i/inverse_of_a_matrix.htm
+#
+# EXAMPLE 1:
+# > m1 <- matrix(c(4, 3, 3, 2), nrow = 2, ncol = 2)    # Matrix
+# > mi1 <- matrix(c(-2, 3, 3, -4), nrow = 2, ncol = 2) # Matrix inverse for comparison purposes
+# > cm1 <- makeCacheMatrix(m1)                         # Cached matrix
+# > cm1$get()                                          # Validation of cached matrix
+# > cmi1 <- cacheSolve(cm1)                            # Solved matrix inverse not from cache.
+# > cmi1 <- cacheSolve(cm1)                            # Solved matrix inverse from cache.
+# > cmi1                                               # Validation of solved matrix inverse from cache.
+# > mi1                                                # Validation of matrix inverse for comparison purposes
+#
+# EXAMPLE 2:
+# > m2 <- matrix(c(1, 0, 1, 2, 4, 0, 3, 5, 6), nrow = 3, ncol = 3)
+# > mi2 <- matrix(c(12/11, 5/22, -2/11, -6/11, 3/22, 1/11, -1/11, -5/22, 2/11), nrow = 3, ncol = 3)
+# > cm2 <- makeCacheMatrix(m2)
+# > cm2$get()
+# > cmi2 <- cacheSolve(cm2)
+# > cmi2 <- cacheSolve(cm2)
+# > cmi2
+# > mi2
+#
 # DATE:      AUTHOR:  COMMENT:
-# 11APR2016  RLJ      Initial creation
+# 11APR2016  RLJ      Initial creation.
+# 13APR2016  RLJ      Added notes and examples; made minor edits.
 ################################################################################
 
 
@@ -39,19 +69,19 @@ makeCacheMatrix <- function(x = matrix()) {
   # Instantiate an empty matrix.
   i <- NULL
   
-  # Declare function to set the value of matrix. 
+  # Declare setter to set the value of matrix. 
   set <- function(y) {
     x <<- y
     i <<- NULL
   }
 
-  # Declare function to get the value of matrix. 
+  # Declare getter to get the value of matrix. 
   get <- function() x
   
-  # Declare function to set the value of the matrix inverse.  
+  # Declare setter to set the value of the matrix inverse.  
   setinverse <- function(inverse) i <<- inverse
 
-  # Declare function to get the value of the matrix inverse. 
+  # Declare getter to get the value of the matrix inverse. 
   getinverse <- function() i
   
   # Return a list containing the above functions.
@@ -76,14 +106,13 @@ makeCacheMatrix <- function(x = matrix()) {
 #
 # ARGS:
 # x:   A numeric matrix
-# ...:
 #
 # RETURNS: A numeric matrix that is the inverse of 'x'
 ################################################################################
 
 cacheSolve <- function(x, ...) {
   
-  # Return the matrix inverse if it was cached.
+  # Return the matrix inverse from cache if it exists there.
   i <- x$getinverse()
   if(!is.null(i)) {
     message("Getting cached data.")
